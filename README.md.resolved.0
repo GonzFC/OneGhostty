@@ -1,0 +1,46 @@
+# OneGhostty 👻
+
+> The ultimate Starship prompt manager for Ghostty (and other terminals).
+
+OneGhostty allows you to easily switch between different Starship prompt configurations with a single command. It supports macOS and Linux, saves your preferences, and includes a curated collection of themes.
+
+## Features
+
+-   **One-Liner Install**: Easy to set up.
+-   **Theme Switcher**: Instantly switch between multiple Starship configs.
+-   **Persistence**: Remembers your choice across sessions.
+-   **Cross-Platform**: Works on macOS and Linux.
+-   **Curated Themes**:
+    -   **Ghostty**: A clean, colorful prompt with Apple/Linux icons.
+    -   **Gruvbox**: A retro-style prompt (ported from IronicBadger).
+    -   **Badger**: A cool blue theme (ported from IronicBadger).
+
+## Installation
+
+Run the following command in your terminal:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yourusername/OneGhostty/main/install.sh | bash
+```
+
+*(Note: Replace `yourusername` with your actual GitHub username)*
+
+## Usage
+
+Once installed, simply run:
+
+```bash
+oneghostty
+```
+
+Select your theme from the menu, and it will be applied instantly!
+
+## Requirements
+
+-   **Starship**: Must be installed (`brew install starship`).
+-   **Nerd Font**: Required for icons (e.g., JetBrains Mono Nerd Font).
+-   **Zsh**: Currently optimized for Zsh.
+
+## License
+
+MIT

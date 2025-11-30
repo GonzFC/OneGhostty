@@ -1,0 +1,39 @@
+# How to Upload OneGhostty to GitHub
+
+I have already initialized the Git repository and committed all the files locally. Now you just need to create the repository on GitHub and push the code.
+
+## 1. Create a New Repository
+
+1.  Go to [github.com/new](https://github.com/new).
+2.  **Repository name**: `OneGhostty`
+3.  **Description**: "The ultimate Starship prompt manager for Ghostty."
+4.  **Public/Private**: Public (so others can use the curl installer).
+5.  **Initialize**: Do **NOT** check "Add a README", "Add .gitignore", or "Choose a license". Create an empty repository.
+6.  Click **Create repository**.
+
+## 2. Push the Code
+
+Once the repository is created, copy the commands from the section **"…or push an existing repository from the command line"**.
+
+Run the following commands in your terminal (I've prepared them for you, just replace `yourusername`):
+
+```bash
+cd /Users/gfernandez/.gemini/antigravity/brain/3eb9e669-4df1-438a-8097-f5183b1ffc51/OneGhostty
+
+# Replace 'yourusername' with your actual GitHub username!
+git remote add origin https://github.com/yourusername/OneGhostty.git
+git branch -M main
+git push -u origin main
+```
+
+## 3. Verify
+
+Refresh your GitHub page. You should see all the files (`install.sh`, `oneghostty.sh`, `README.md`, etc.).
+
+## 4. Test the Installer
+
+Now anyone can install your tool using:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yourusername/OneGhostty/main/install.sh | bash
+```

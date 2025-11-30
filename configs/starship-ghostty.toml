@@ -1,0 +1,49 @@
+# Starship Configuration to replicate Ghostty/Tailscale screenshot style
+
+format = """
+[](#d65d0e)\
+$os\
+$username\
+$hostname\
+[](bg:#d79921 fg:#d65d0e)\
+$directory\
+[](bg:#3c3836 fg:#d79921)\
+$time\
+[ ](fg:#3c3836)\
+$line_break\
+$character"""
+
+[os]
+disabled = false
+style = "bg:#d65d0e fg:#282828"
+format = '[$symbol]($style)'
+
+[os.symbols]
+Macos = " "
+
+[username]
+show_always = true
+style_user = "bg:#d65d0e fg:#282828"
+style_root = "bg:#d65d0e fg:#282828"
+format = '[ $user]($style)'
+
+[hostname]
+ssh_only = false
+style = "bg:#d65d0e fg:#282828"
+format = '[@$hostname]($style)'
+
+[directory]
+style = "bg:#d79921 fg:#282828"
+format = '[ $path ]($style)'
+truncation_length = 3
+truncation_symbol = "…/"
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "bg:#3c3836 fg:#ebdbb2"
+format = '[  $time ]($style)'
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
