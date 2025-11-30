@@ -77,4 +77,11 @@ fi
 
 # 5. Run it now
 echo -e "${GREEN}Installation complete! Launching OneGhostty...${NC}"
-"$INSTALL_DIR/oneghostty.sh"
+
+# If running via pipe (curl | bash), stdin is the pipe, not the keyboard.
+# We need to explicitly read from /dev/tty to allow user interaction.
+if [ -e /dev/tty ]; then
+    "$INSTALL_DIR/oneghostty.sh" < /dev/tty
+else
+    echo "Cannot detect TTY. Please restart your terminal and run 'oneghostty' manually."
+fi
