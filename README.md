@@ -37,9 +37,10 @@ Select your theme from the menu, and it will be applied instantly!
 
 ## Requirements
 
--   **Starship**: Must be installed (`brew install starship`).
--   **Nerd Font**: Required for icons (e.g., JetBrains Mono Nerd Font).
--   **Zsh**: Currently optimized for Zsh.
+-   **macOS**: Homebrew must be installed ([brew.sh](https://brew.sh)).
+-   **Linux**: Ubuntu 24.04 or later.
+
+> Starship and JetBrains Mono Nerd Font will be installed automatically if not found.
 
 ## License
 

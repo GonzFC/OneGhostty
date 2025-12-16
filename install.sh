@@ -40,40 +40,49 @@ download_file "$REPO_RAW_URL/configs/starship-badger.toml" "$INSTALL_DIR/configs
 # 3. Install Starship
 if ! command -v starship &> /dev/null; then
     echo "Starship not found. Installing..."
-    # Distro-agnostic install (works on macOS/Linux/BSD)
-    curl -sS https://starship.rs/install.sh | sh -s -- -y
+    if [ "$(uname)" == "Darwin" ]; then
+        # macOS: Use Homebrew
+        if ! command -v brew &> /dev/null; then
+            echo -e "${RED}Error: Homebrew is required on macOS. Install it from https://brew.sh${NC}"
+            exit 1
+        fi
+        brew install starship
+    else
+        # Linux: Use official installer
+        curl -sS https://starship.rs/install.sh | sh -s -- -y
+    fi
 else
     echo "Starship is already installed."
 fi
 
 # 4. Install Nerd Font (JetBrains Mono)
-FONT_NAME="JetBrainsMono"
 if [ "$(uname)" == "Darwin" ]; then
+    # macOS: Use Homebrew Cask
     FONT_DIR="$HOME/Library/Fonts"
-    OS_TYPE="Mac"
+    if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ] && ! brew list --cask font-jetbrains-mono-nerd-font &> /dev/null; then
+        echo "Installing JetBrains Mono Nerd Font via Homebrew..."
+        brew install --cask font-jetbrains-mono-nerd-font
+        echo "Font installed. You may need to set 'JetBrainsMono Nerd Font' in your terminal settings."
+    else
+        echo "Nerd Font appears to be installed."
+    fi
 else
+    # Linux: Direct download
     FONT_DIR="$HOME/.local/share/fonts"
-    OS_TYPE="Linux"
-fi
+    if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
+        echo "Installing JetBrains Mono Nerd Font..."
+        mkdir -p "$FONT_DIR"
+        curl -fLo "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" \
+            "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFont-Regular.ttf"
 
-# Check if font seems to be installed (rough check)
-if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
-    echo "Installing JetBrains Mono Nerd Font..."
-    mkdir -p "$FONT_DIR"
-    # Download a single TTF to save bandwidth/complexity, or a small zip
-    # Using a direct link to a reliable patched font release
-    curl -fLo "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" \
-        "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFont-Regular.ttf"
-    
-    if [ "$OS_TYPE" == "Linux" ]; then
         if command -v fc-cache &> /dev/null; then
             echo "Updating font cache..."
             fc-cache -f "$FONT_DIR"
         fi
+        echo "Font installed. You may need to set 'JetBrainsMono Nerd Font' in your terminal settings."
+    else
+        echo "Nerd Font appears to be installed."
     fi
-    echo "Font installed. You may need to set 'JetBrainsMono Nerd Font' in your terminal settings."
-else
-    echo "Nerd Font appears to be installed."
 fi
 
 # 5. Configure Shell (Alias + Init)
