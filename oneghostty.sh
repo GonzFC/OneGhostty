@@ -66,7 +66,7 @@ apply_theme() {
         CURRENT_THEME="$theme_name"
         
         echo -e "\n${GREEN}✔ Successfully switched to $theme_name!${NC}"
-        echo -e "Press ${YELLOW}Enter${NC} in your terminal to see the change."
+        echo -e "${YELLOW}Restart your terminal${NC} or run ${CYAN}source ~/.zshrc${NC} to see the change."
     else
         echo -e "\n${RED}✘ Error: Theme file not found at $theme_file${NC}"
         read -p "Press Enter to continue..."

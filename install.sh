@@ -104,27 +104,26 @@ fi
 
 ALIAS_CMD="alias $BIN_NAME='$INSTALL_DIR/oneghostty.sh'"
 
-if [ -f "$SHELL_CONFIG" ]; then
-    echo "Configuring $SHELL_CONFIG..."
-    
-    # Add Alias
-    if ! grep -q "$ALIAS_CMD" "$SHELL_CONFIG"; then
-        echo "$ALIAS_CMD" >> "$SHELL_CONFIG"
-        echo "Added alias."
-    fi
-    
-    # Add Starship Init
-    if ! grep -q "starship init" "$SHELL_CONFIG"; then
-        echo "" >> "$SHELL_CONFIG"
-        echo "# OneGhostty Starship Init" >> "$SHELL_CONFIG"
-        echo "$INIT_CMD" >> "$SHELL_CONFIG"
-        echo "Added Starship initialization."
-    fi
-else
-    echo -e "${RED}Could not find shell config ($SHELL_CONFIG).${NC}"
-    echo "Please add the following to your shell config manually:"
-    echo "  $ALIAS_CMD"
-    echo "  $INIT_CMD"
+# Create shell config if it doesn't exist
+if [ ! -f "$SHELL_CONFIG" ]; then
+    echo "Creating $SHELL_CONFIG..."
+    touch "$SHELL_CONFIG"
+fi
+
+echo "Configuring $SHELL_CONFIG..."
+
+# Add Alias
+if ! grep -q "$ALIAS_CMD" "$SHELL_CONFIG"; then
+    echo "$ALIAS_CMD" >> "$SHELL_CONFIG"
+    echo "Added alias."
+fi
+
+# Add Starship Init
+if ! grep -q "starship init" "$SHELL_CONFIG"; then
+    echo "" >> "$SHELL_CONFIG"
+    echo "# OneGhostty Starship Init" >> "$SHELL_CONFIG"
+    echo "$INIT_CMD" >> "$SHELL_CONFIG"
+    echo "Added Starship initialization."
 fi
 
 # 6. Run it now
@@ -137,3 +136,10 @@ if [ -e /dev/tty ]; then
 else
     echo "Cannot detect TTY. Please restart your terminal and run 'oneghostty' manually."
 fi
+
+# Final reminder
+echo ""
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}  IMPORTANT: Restart your terminal to activate Starship!${NC}"
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
