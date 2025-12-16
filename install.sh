@@ -137,3 +137,10 @@ if [ -e /dev/tty ]; then
 else
     echo "Cannot detect TTY. Please restart your terminal and run 'oneghostty' manually."
 fi
+
+# Final reminder
+echo ""
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}  IMPORTANT: Restart your terminal to activate Starship!${NC}"
+echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
