@@ -125,7 +125,20 @@ fi
 
 echo "Configuring $SHELL_CONFIG..."
 
+# Helper: prepend a block of lines to the shell config (so PATH is set before starship init)
+prepend_to_shell_config() {
+    local header="$1"
+    local line="$2"
+    {
+        echo "# $header"
+        echo "$line"
+        echo ""
+        cat "$SHELL_CONFIG"
+    } > "$SHELL_CONFIG.tmp" && mv "$SHELL_CONFIG.tmp" "$SHELL_CONFIG"
+}
+
 # Add Homebrew to PATH on macOS (critical for Apple Silicon, where brew lives at /opt/homebrew)
+# Prepended so it runs BEFORE any existing starship init line (idempotent fix for old installs)
 if [ "$(uname)" == "Darwin" ]; then
     BREW_SHELLENV=""
     if [ -x "/opt/homebrew/bin/brew" ]; then
@@ -135,18 +148,15 @@ if [ "$(uname)" == "Darwin" ]; then
     fi
 
     if [ -n "$BREW_SHELLENV" ] && ! grep -qF "brew shellenv" "$SHELL_CONFIG"; then
-        echo "" >> "$SHELL_CONFIG"
-        echo "# Homebrew" >> "$SHELL_CONFIG"
-        echo "$BREW_SHELLENV" >> "$SHELL_CONFIG"
-        echo "Added Homebrew to PATH."
+        prepend_to_shell_config "Homebrew" "$BREW_SHELLENV"
+        echo "Added Homebrew to PATH (prepended)."
     fi
 else
     # Linux: Add ~/.local/bin to PATH if starship was installed there
+    # Prepended so it runs BEFORE any existing starship init line
     if [ -x "$HOME/.local/bin/starship" ] && ! grep -qF 'PATH="$HOME/.local/bin' "$SHELL_CONFIG"; then
-        echo "" >> "$SHELL_CONFIG"
-        echo "# Local binaries" >> "$SHELL_CONFIG"
-        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$SHELL_CONFIG"
-        echo "Added ~/.local/bin to PATH."
+        prepend_to_shell_config "Local binaries" 'export PATH="$HOME/.local/bin:$PATH"'
+        echo "Added ~/.local/bin to PATH (prepended)."
     fi
 fi
 
