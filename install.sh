@@ -37,6 +37,10 @@ download_file "$REPO_RAW_URL/configs/starship-ghostty.toml" "$INSTALL_DIR/config
 download_file "$REPO_RAW_URL/configs/starship-gruv.toml" "$INSTALL_DIR/configs/starship-gruv.toml"
 download_file "$REPO_RAW_URL/configs/starship-badger.toml" "$INSTALL_DIR/configs/starship-badger.toml"
 
+# Skip brew auto-updates to avoid slow/flaky first runs
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+
 # 3. Install Starship
 if ! command -v starship &> /dev/null; then
     echo "Starship not found. Installing..."
@@ -46,7 +50,10 @@ if ! command -v starship &> /dev/null; then
             echo -e "${RED}Error: Homebrew is required on macOS. Install it from https://brew.sh${NC}"
             exit 1
         fi
-        brew install starship
+        if ! brew install starship; then
+            echo -e "${RED}Error: Failed to install Starship via Homebrew.${NC}"
+            exit 1
+        fi
     else
         # Linux: Use official installer
         curl -sS https://starship.rs/install.sh | sh -s -- -y
@@ -61,7 +68,10 @@ if [ "$(uname)" == "Darwin" ]; then
     FONT_DIR="$HOME/Library/Fonts"
     if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ] && ! brew list --cask font-jetbrains-mono-nerd-font &> /dev/null; then
         echo "Installing JetBrains Mono Nerd Font via Homebrew..."
-        brew install --cask font-jetbrains-mono-nerd-font
+        if ! brew install --cask font-jetbrains-mono-nerd-font; then
+            echo -e "${RED}Error: Failed to install Nerd Font via Homebrew.${NC}"
+            exit 1
+        fi
         echo "Font installed. You may need to set 'JetBrainsMono Nerd Font' in your terminal settings."
     else
         echo "Nerd Font appears to be installed."
@@ -112,14 +122,31 @@ fi
 
 echo "Configuring $SHELL_CONFIG..."
 
+# Add Homebrew to PATH on macOS (critical for Apple Silicon, where brew lives at /opt/homebrew)
+if [ "$(uname)" == "Darwin" ]; then
+    BREW_SHELLENV=""
+    if [ -x "/opt/homebrew/bin/brew" ]; then
+        BREW_SHELLENV='eval "$(/opt/homebrew/bin/brew shellenv)"'
+    elif [ -x "/usr/local/bin/brew" ]; then
+        BREW_SHELLENV='eval "$(/usr/local/bin/brew shellenv)"'
+    fi
+
+    if [ -n "$BREW_SHELLENV" ] && ! grep -qF "brew shellenv" "$SHELL_CONFIG"; then
+        echo "" >> "$SHELL_CONFIG"
+        echo "# Homebrew" >> "$SHELL_CONFIG"
+        echo "$BREW_SHELLENV" >> "$SHELL_CONFIG"
+        echo "Added Homebrew to PATH."
+    fi
+fi
+
 # Add Alias
-if ! grep -q "$ALIAS_CMD" "$SHELL_CONFIG"; then
+if ! grep -qF "$ALIAS_CMD" "$SHELL_CONFIG"; then
     echo "$ALIAS_CMD" >> "$SHELL_CONFIG"
     echo "Added alias."
 fi
 
 # Add Starship Init
-if ! grep -q "starship init" "$SHELL_CONFIG"; then
+if ! grep -qF "starship init" "$SHELL_CONFIG"; then
     echo "" >> "$SHELL_CONFIG"
     echo "# OneGhostty Starship Init" >> "$SHELL_CONFIG"
     echo "$INIT_CMD" >> "$SHELL_CONFIG"
