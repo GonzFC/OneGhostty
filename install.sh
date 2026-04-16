@@ -82,8 +82,11 @@ else
     if [ ! -f "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" ]; then
         echo "Installing JetBrains Mono Nerd Font..."
         mkdir -p "$FONT_DIR"
-        curl -fLo "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" \
-            "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFont-Regular.ttf"
+        if ! curl -fLo "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" \
+            "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMonoNerdFont-Regular.ttf"; then
+            echo -e "${RED}Error: Failed to download Nerd Font.${NC}"
+            exit 1
+        fi
 
         if command -v fc-cache &> /dev/null; then
             echo "Updating font cache..."
@@ -136,6 +139,14 @@ if [ "$(uname)" == "Darwin" ]; then
         echo "# Homebrew" >> "$SHELL_CONFIG"
         echo "$BREW_SHELLENV" >> "$SHELL_CONFIG"
         echo "Added Homebrew to PATH."
+    fi
+else
+    # Linux: Add ~/.local/bin to PATH if starship was installed there
+    if [ -x "$HOME/.local/bin/starship" ] && ! grep -qF 'PATH="$HOME/.local/bin' "$SHELL_CONFIG"; then
+        echo "" >> "$SHELL_CONFIG"
+        echo "# Local binaries" >> "$SHELL_CONFIG"
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$SHELL_CONFIG"
+        echo "Added ~/.local/bin to PATH."
     fi
 fi
 
