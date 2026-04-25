@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # OneGhostty - The Ultimate Starship Prompt Manager
-# https://github.com/yourusername/OneGhostty
+# https://github.com/GonzFC/OneGhostty
 
 # --- Configuration ---
 CONFIG_DIR="$HOME/.config/oneghostty"
@@ -24,6 +24,16 @@ case "$OS" in
     Linux*)     MACHINE="Linux";;
     *)          MACHINE="UNKNOWN";;
 esac
+
+# --- Shell Detection ---
+CURRENT_SHELL=$(basename "$SHELL")
+if [ "$CURRENT_SHELL" = "zsh" ]; then
+    SHELL_CONFIG_FILE="~/.zshrc"
+elif [ "$CURRENT_SHELL" = "bash" ]; then
+    SHELL_CONFIG_FILE="~/.bashrc"
+else
+    SHELL_CONFIG_FILE="~/.profile"
+fi
 
 # --- Helper Functions ---
 load_prefs() {
@@ -66,7 +76,7 @@ apply_theme() {
         CURRENT_THEME="$theme_name"
         
         echo -e "\n${GREEN}✔ Successfully switched to $theme_name!${NC}"
-        echo -e "Press ${YELLOW}Enter${NC} in your terminal to see the change."
+        echo -e "${YELLOW}Restart your terminal${NC} or run ${CYAN}source $SHELL_CONFIG_FILE${NC} to see the change."
     else
         echo -e "\n${RED}✘ Error: Theme file not found at $theme_file${NC}"
         read -p "Press Enter to continue..."
